@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/misiektoja-kill-process-mcp-badge.png)](https://mseep.ai/app/misiektoja-kill-process-mcp)
+
 # kill-process-mcp 🔫
 
 Cross-platform **MCP** (Model Context Protocol) server exposing tools to **list and kill OS processes** via natural language queries.
