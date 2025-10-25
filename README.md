@@ -26,7 +26,7 @@ The following tools are exposed to MCP clients:
 <a id="requirements"></a>
 ## Requirements
 
-* MCP-compatible LLM client (like [Claude Desktop](https://claude.ai/download))
+* MCP-compatible LLM client (like [Claude Desktop](https://claude.ai/download) or [Cursor](https://cursor.com))
 * OS: macOS/Windows/Linux
 * Python 3.13 or higher
 * [uv](https://github.com/astral-sh/uv)
@@ -61,40 +61,73 @@ uv sync
 <a id="2-configure-mcp-client"></a>
 ### 2. Configure MCP Client
 
-Register the `kill-process-mcp` as an MCP server in your client.
+---
 
-For example, in Claude Desktop add the following to `claude_desktop_config.json` file:
+### 🟣 Claude Desktop
 
+Register the `kill-process-mcp` as an MCP server in Claude Desktop.
+
+Add the following to `claude_desktop_config.json` file:
 
   ```json
 {
-    "mcpServers":
-    {
-        "kill-process-mcp":
-        {
+    "mcpServers": {
+        "kill-process-mcp": {
             "command": "uv",
-            "args":
-            [
+            "args": [
                 "run",
                 "--directory",
                 "/path/to/kill-process-mcp",
                 "kill_process_mcp.py"
-            ],
-            "type": "stdio"
+            ]
         }
     }
 }
   ```
 
-Default `claude_desktop_config.json` location:
+Default `claude_desktop_config.json` location (if the file is missing - create it):
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 Replace `/path/to/kill-process-mcp` with the actual path of your project folder (remember to escape backslash characters if you're on Windows, e.g.: `C:\\path\\to\\kill-process-mcp`)
 
-Restart your LLM client and it should be able to talk to the `kill-process-mcp` server.
+Restart Claude Desktop and it should be able to talk to the `kill-process-mcp` server.
 
-In `Claude Desktop` you can check if the server is installed by going to **Profile → Settings → Integrations**.
+You can check if the server is loaded by going to **Profile → Settings → Integrations**.
+
+---
+
+### 🟢 Cursor
+
+Register the `kill-process-mcp` as an MCP server in Cursor.
+
+Open Cursor settings and click **Tools & MCP → Add Custom MCP**. Once the `mcp.json` file opens, add the following:
+
+  ```json
+{
+    "mcpServers": {
+        "kill-process-mcp": {
+            "command": "uv",
+            "args": [
+                "run",
+                "--directory",
+                "/path/to/kill-process-mcp",
+                "kill_process_mcp.py"
+            ]
+        }
+    }
+}
+  ```
+
+Default `mcp.json` location:
+- macOS/Linux: `~/.cursor/mcp.json`
+- Windows: `%USERPROFILE%\.cursor\mcp.json`
+
+Replace `/path/to/kill-process-mcp` with the actual path of your project folder (remember to escape backslash characters if you're on Windows, e.g.: `C:\\path\\to\\kill-process-mcp`)
+
+You should be able to talk to the `kill-process-mcp` server now.
+
+You can check if the server is loaded by going to Cursor settings and clicking **Tools & MCP**.
 
 <a id="example-hit-contracts"></a>
 ## Example Hit Contracts
@@ -108,6 +141,41 @@ Here are some example prompts you can use with your MCP-compatible AI assistant 
 - List Alice's Python processes, max 10 entries
 - Which processes are over 2% CPU and 100 MB RAM
 - **anything else your imagination brings ...**
+
+<a id="upgrade"></a>
+## Upgrade
+
+Pull the latest code:
+
+```sh
+cd kill-process-mcp
+git pull
+```
+
+Re-sync deps to pick up version bumps and lockfile changes:
+
+```sh
+uv sync --reinstall
+```
+
+<a id="known-issues"></a>
+## Known issues
+
+We do not pin Python. New minor versions are usually supported on day one via wheels. 
+
+If you hit a build error (e.g `pydantic-core` or `rpds-py` failing with a Rust toolchain message), it usually means 
+the ecosystem is catching up with the latest Python version. In most cases this is temporary and fixed shortly by
+upstream packages.
+
+Try a clean rebuild in such case:
+
+``` sh
+cd kill-process-mcp
+rm -rf .venv
+uv sync
+```
+
+If that still fails, temporarily use your previous Python minor version until compatible wheels are published (typically within a few days).
 
 <a id="disclaimer"></a>
 ## Disclaimer
