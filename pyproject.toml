@@ -16,3 +16,10 @@ dependencies = [
 Homepage = "https://github.com/misiektoja/kill-process-mcp"
 Source   = "https://github.com/misiektoja/kill-process-mcp"
 Changelog= "https://github.com/misiektoja/kill-process-mcp/blob/main/RELEASE_NOTES.md"
+
+[project.scripts]
+kill-process-mcp = "kill_process_mcp:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
