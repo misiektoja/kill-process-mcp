@@ -1,6 +1,6 @@
 """
 Author: Michal Szymanski <misiektoja-github@rm-rf.ninja>
-v1.0
+v1.1
 
 Cross-platform MCP server exposing tools to list and kill OS processes:
 https://github.com/misiektoja/kill-process-mcp
@@ -131,26 +131,64 @@ def _serialize(proc: psutil.Process) -> Dict[str, Any]:
         return {"pid": proc.pid, "name": "<terminated>", "username": "<unknown>", "status": "<terminated>", "cpu_percent": 0.0, "rss": 0}
 
 
+# Coerces int-like strings to int, else raises ValueError
+def _to_int(val: Any, field: str) -> int:
+    if isinstance(val, int):
+        return val
+    if isinstance(val, str):
+        try:
+            return int(val.strip())
+        except ValueError:
+            raise ValueError(f"{field} must be an integer or null, got: '{val}' (type: {type(val)})")
+    raise ValueError(f"{field} must be an integer or null, got: {val} (type: {type(val)})")
+
+
+# Coerces float-like strings to float, else raises ValueError
+def _to_float(val: Any, field: str) -> float:
+    if isinstance(val, (int, float)):
+        return float(val)
+    if isinstance(val, str):
+        try:
+            return float(val.strip())
+        except ValueError:
+            raise ValueError(f"{field} must be a number, got: '{val}' (type: {type(val)})")
+    raise ValueError(f"{field} must be a number, got: {val} (type: {type(val)})")
+
+
 @mcp.tool()
-async def process_list(sort_by: Literal["cpu", "memory"] = "cpu", duration: int = 2, limit: int | None = None, name_filter: str | None = None, user_filter: str | None = None, status_filter: Literal["running", "sleeping", "stopped", "zombie"] | None = None, min_cpu: float | None = None, min_memory: int | None = None, include_system: bool = False, sort_asc: bool = False, ctx: Context | None = None,) -> List[Dict[str, Any]]:
+async def process_list(sort_by: Literal["cpu", "memory"] = "cpu", duration: int | str = 2, limit: int | str | None = None, name_filter: str | None = None, user_filter: str | None = None, status_filter: Literal["running", "sleeping", "stopped", "zombie"] | None = None, min_cpu: float | str | None = None, min_memory: int | str | None = None, include_system: bool = False, sort_asc: bool = False, ctx: Context | None = None,) -> List[Dict[str, Any]]:
     """List running processes sorted by CPU or memory with optional name, user, status, CPU/memory thresholds, system-process filtering, sort order and limit."""
 
     if ctx:
         await ctx.info(
-            f"process_list called sort_by={sort_by} duration={duration} "
-            f"limit={limit} name_filter={name_filter} user_filter={user_filter} "
-            f"status_filter={status_filter} min_cpu={min_cpu} min_memory={min_memory} "
-            f"include_system={include_system} sort_asc={sort_asc}"
+            f"process_list called sort_by={sort_by} duration={duration} (type={type(duration)}) "
+            f"limit={limit} (type={type(limit)}) name_filter={name_filter} user_filter={user_filter} "
+            f"status_filter={status_filter} min_cpu={min_cpu} (type={type(min_cpu)}) "
+            f"min_memory={min_memory} (type={type(min_memory)}) include_system={include_system} "
+            f"sort_asc={sort_asc}"
         )
 
     if sort_by not in {"cpu", "memory"}:
-        raise ValueError("sort_by must be 'cpu' or 'memory'")
+        raise ValueError(f"sort_by must be 'cpu' or 'memory', got: {sort_by} (type: {type(sort_by)})")
 
-    if isinstance(limit, str):
-        try:
-            limit = int(limit)
-        except ValueError:
-            raise ValueError("limit must be an integer or null")
+    if limit is not None:
+        limit = _to_int(limit, "limit")
+        if limit < 0:
+            raise ValueError(f"limit must be non-negative, got: {limit}")
+
+    duration = _to_int(duration, "duration")
+    if duration < 0:
+        raise ValueError(f"duration must be non-negative, got: {duration}")
+
+    if min_cpu is not None:
+        min_cpu = _to_float(min_cpu, "min_cpu")
+        if min_cpu < 0:
+            raise ValueError(f"min_cpu must be non-negative, got: {min_cpu}")
+
+    if min_memory is not None:
+        min_memory = _to_int(min_memory, "min_memory")
+        if min_memory < 0:
+            raise ValueError(f"min_memory must be non-negative, got: {min_memory}")
 
     _snapshot_cpu()
 
