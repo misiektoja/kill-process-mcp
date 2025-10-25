@@ -240,5 +240,10 @@ async def process_kill(pid: int, ctx: Context | None = None) -> str:
     except (psutil.NoSuchProcess, psutil.AccessDenied) as err:
         return f"Failed to kill {pid}: {err}"
 
-if __name__ == "__main__":
+
+def main() -> None:
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()
