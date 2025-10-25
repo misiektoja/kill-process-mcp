@@ -1,6 +1,6 @@
 [project]
 name = "kill-process-mcp"
-version = "1.0"
+version = "1.1"
 description = "Cross-platform MCP server exposing tools to list and kill OS processes"
 readme = "README.md"
 license = "GPL-3.0-or-later"
