@@ -71,7 +71,7 @@ import psutil
 from mcp.server.fastmcp import Context, FastMCP
 
 
-mcp = FastMCP("kill_process_mcp", "MCP server exposing tools to list and kill OS processes", auth_server_provider=None, tool_homepage="https://github.com/misiektoja/kill-process-mcp", auth=None)
+mcp = FastMCP("kill_process_mcp", "MCP server exposing tools to list and kill OS processes", auth_server_provider=None, auth=None)
 
 
 # Prepares per-process CPU counters and returns initial sample
