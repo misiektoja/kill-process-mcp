@@ -33,36 +33,42 @@ def _phys_footprint(pid: int) -> int:
 
 # macOS-only helper for Activity Monitor-style memory
 if sys.platform == "darwin":
-    _RUSAGE_INFO_V6 = 2
+    _RUSAGE_INFO_V2 = 2
 
-    class _RUsageInfoV6(ctypes.Structure):
-        _fields_ = [("ri_uuid", ctypes.c_uint8 * 16),
-                    ("ri_user_time", ctypes.c_uint64),
-                    ("ri_system_time", ctypes.c_uint64),
-                    ("ri_pkg_idle_wkups", ctypes.c_uint64),
-                    ("ri_interrupt_wkups", ctypes.c_uint64),
-                    ("ri_pageins", ctypes.c_uint64),
-                    ("ri_wired_size", ctypes.c_uint64),
-                    ("ri_resident_size", ctypes.c_uint64),
-                    ("ri_phys_footprint", ctypes.c_uint64),
-                    ("ri_proc_start_abstime", ctypes.c_uint64),
-                    ("ri_proc_exit_abstime", ctypes.c_uint64),
-                    ("ri_child_user_time", ctypes.c_uint64),
-                    ("ri_child_system_time", ctypes.c_uint64),
-                    ("ri_child_pkg_idle_wkups", ctypes.c_uint64),
-                    ("ri_child_interrupt_wkups", ctypes.c_uint64),
-                    ("ri_child_pageins", ctypes.c_uint64),
-                    ("ri_child_elapsed_abstime", ctypes.c_uint64)]
+    class _RUsageInfoV2(ctypes.Structure):
+        _fields_ = [
+            ("ri_uuid", ctypes.c_uint8 * 16),
+            ("ri_user_time", ctypes.c_uint64),
+            ("ri_system_time", ctypes.c_uint64),
+            ("ri_pkg_idle_wkups", ctypes.c_uint64),
+            ("ri_interrupt_wkups", ctypes.c_uint64),
+            ("ri_pageins", ctypes.c_uint64),
+            ("ri_wired_size", ctypes.c_uint64),
+            ("ri_resident_size", ctypes.c_uint64),
+            ("ri_phys_footprint", ctypes.c_uint64),
+            ("ri_proc_start_abstime", ctypes.c_uint64),
+            ("ri_proc_exit_abstime", ctypes.c_uint64),
+            ("ri_child_user_time", ctypes.c_uint64),
+            ("ri_child_system_time", ctypes.c_uint64),
+            ("ri_child_pkg_idle_wkups", ctypes.c_uint64),
+            ("ri_child_interrupt_wkups", ctypes.c_uint64),
+            ("ri_child_pageins", ctypes.c_uint64),
+            ("ri_child_elapsed_abstime", ctypes.c_uint64),
+            ("ri_diskio_bytesread", ctypes.c_uint64),
+            ("ri_diskio_byteswritten", ctypes.c_uint64),
+        ]
+
     _libproc = ctypes.CDLL(ctypes.util.find_library("proc"), use_errno=True)
     _proc_pid_rusage = _libproc.proc_pid_rusage
-    _proc_pid_rusage.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(_RUsageInfoV6)]
+    _proc_pid_rusage.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(_RUsageInfoV2)]
     _proc_pid_rusage.restype = ctypes.c_int
 
     def _phys_footprint(pid: int) -> int:
-        info = _RUsageInfoV6()
+        info = _RUsageInfoV2()
         try:
-            if _proc_pid_rusage(pid, _RUSAGE_INFO_V6, ctypes.byref(info)) == 0:
-                return info.ri_phys_footprint
+            ret = _proc_pid_rusage(pid, _RUSAGE_INFO_V2, ctypes.byref(info))
+            if ret == 0:
+                return int(info.ri_phys_footprint)
         except Exception:
             pass
         return 0
@@ -192,10 +198,7 @@ async def process_list(sort_by: Literal["cpu", "memory"] = "cpu", duration: int 
 
     _snapshot_cpu()
 
-    if sort_by == "cpu":
-        await asyncio.sleep(duration)
-    else:
-        await asyncio.sleep(0.1)
+    await asyncio.sleep(max(0.5, duration if sort_by == "cpu" else duration))
 
     procs = _collect_processes()
     serialised = [_serialize(p) for p in procs]
