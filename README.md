@@ -35,15 +35,17 @@ The following tools are exposed to MCP clients:
 <a id="installation"></a>
 ## Installation
 
-<a id="1-clone-the-repo-and-install"></a>
-### 1. Clone the repo and install
+You can install `kill-process-mcp` in two ways:
 
-```sh
-git clone https://github.com/misiektoja/kill-process-mcp.git
-cd kill-process-mcp
-```
+1. **Preferred:** use `uvx` - no cloning or setup needed.  
+2. **Alternative:** clone the repo and set up manually.
 
-Install `uv` if missing:
+---
+
+<a id="1-install-uv-required-for-both-methods"></a>
+### 1. Install uv (required for both methods)
+
+Install [uv](https://github.com/astral-sh/uv) if missing:
 
 ```sh
 pip install uv
@@ -52,24 +54,48 @@ pip install uv
 brew install uv
 ```
 
+In case of the preferred `uvx` method you can now [configure your MCP client](#3-configure-mcp-client) (skip the cloning step below).
+
+<a id="2-clone-the-repo-and-install-only-required-for-alternative-mode-skip-for-uvx"></a>
+### 2. Clone the repo and install (only required for alternative mode, skip for uvx)
+
+```sh
+git clone https://github.com/misiektoja/kill-process-mcp.git
+cd kill-process-mcp
+```
+
 Install dependencies:
 
 ```sh
 uv sync
 ```
 
-<a id="2-configure-mcp-client"></a>
-### 2. Configure MCP Client
+<a id="3-configure-mcp-client"></a>
+### 3. Configure MCP Client
 
 ---
 
+<a id="-claude-desktop"></a>
 ### 🟣 Claude Desktop
 
 Register the `kill-process-mcp` as an MCP server in Claude Desktop.
 
-Add the following to `claude_desktop_config.json` file:
+Add the following to `claude_desktop_config.json` file if you want to use `uvx` method (recommended):
 
-  ```json
+```json
+{
+    "mcpServers": {
+        "kill-process-mcp": {
+            "command": "uvx",
+            "args": ["kill-process-mcp@latest"]
+        }
+    }
+}
+```
+
+In case of an alternative manual method using a cloned repo:
+
+```json
 {
     "mcpServers": {
         "kill-process-mcp": {
@@ -83,7 +109,7 @@ Add the following to `claude_desktop_config.json` file:
         }
     }
 }
-  ```
+```
 
 Default `claude_desktop_config.json` location (if the file is missing - create it):
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -93,17 +119,33 @@ Replace `/path/to/kill-process-mcp` with the actual path of your project folder 
 
 Restart Claude Desktop and it should be able to talk to the `kill-process-mcp` server.
 
-You can check if the server is loaded by going to **Profile → Settings → Integrations**.
+You can check if the server is loaded by going to **Profile → Settings → Connectors**.
 
 ---
 
+<a id="-cursor"></a>
 ### 🟢 Cursor
 
 Register the `kill-process-mcp` as an MCP server in Cursor.
 
-Open Cursor settings and click **Tools & MCP → Add Custom MCP**. Once the `mcp.json` file opens, add the following:
+Open Cursor settings and click **Tools & MCP → Add Custom MCP**. 
 
-  ```json
+Once the `mcp.json` file opens, add the following if you want to use `uvx` method (recommended):
+
+```json
+{
+    "mcpServers": {
+        "kill-process-mcp": {
+            "command": "uvx",
+            "args": ["kill-process-mcp@latest"]
+        }
+    }
+}
+```
+
+In case of an alternative manual method using a cloned repo:
+
+```json
 {
     "mcpServers": {
         "kill-process-mcp": {
@@ -117,7 +159,7 @@ Open Cursor settings and click **Tools & MCP → Add Custom MCP**. Once the `mcp
         }
     }
 }
-  ```
+```
 
 Default `mcp.json` location:
 - macOS/Linux: `~/.cursor/mcp.json`
@@ -128,6 +170,29 @@ Replace `/path/to/kill-process-mcp` with the actual path of your project folder 
 You should be able to talk to the `kill-process-mcp` server now.
 
 You can check if the server is loaded by going to Cursor settings and clicking **Tools & MCP**.
+
+---
+
+<a id="-optional-install-a-persistent-shim"></a>
+### Optional: Install a Persistent Shim
+
+If you prefer faster startup or offline use while using the `uvx` method, you can install a local shim once:
+
+```sh
+uv tool install kill-process-mcp
+```
+
+Then change your LLM client config to:
+
+```json
+{
+  "mcpServers": {
+    "kill-process-mcp": {
+      "command": "kill-process-mcp"
+    }
+  }
+}
+```
 
 <a id="example-hit-contracts"></a>
 ## Example Hit Contracts
@@ -145,16 +210,13 @@ Here are some example prompts you can use with your MCP-compatible AI assistant 
 <a id="upgrade"></a>
 ## Upgrade
 
-Pull the latest code:
+When using `uvx`, it automatically fetches and runs the latest published version each time your LLM client starts.
+
+If you're using the alternative manual method with a cloned repo, update with:
 
 ```sh
 cd kill-process-mcp
 git pull
-```
-
-Re-sync deps to pick up version bumps and lockfile changes:
-
-```sh
 uv sync --reinstall
 ```
 
@@ -163,8 +225,7 @@ uv sync --reinstall
 
 We do not pin Python. New minor versions are usually supported on day one via wheels. 
 
-If you hit a build error (e.g `pydantic-core` or `rpds-py` failing with a Rust toolchain message), it usually means 
-the ecosystem is catching up with the latest Python version. In most cases this is temporary and fixed shortly by
+If you're using the alternative manual method with a cloned repo and you hit a build error (e.g `pydantic-core` or `rpds-py` failing with a Rust toolchain message), it usually means the ecosystem is catching up with the latest Python version. In most cases this is temporary and fixed shortly by
 upstream packages.
 
 Try a clean rebuild in such case:
