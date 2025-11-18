@@ -6,6 +6,7 @@ Perfect for shy ninjas who just want rogue processes gone!
 
 > **"Find and nuke the damn CPU glutton choking my system!"**
 
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/misiektoja/kill-process-mcp)](https://archestra.ai/mcp-catalog/misiektoja__kill-process-mcp)
 <a href="https://glama.ai/mcp/servers/@misiektoja/kill-process-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@misiektoja/kill-process-mcp/badge" alt="kill-process-mcp MCP server" />
 </a>
