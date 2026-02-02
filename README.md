@@ -1,14 +1,15 @@
 # kill-process-mcp 🔫
 
-Cross-platform **MCP** (Model Context Protocol) server exposing tools to **list and kill OS processes** via natural language queries.
+<p align="left">
+  <img src="https://img.shields.io/github/stars/misiektoja/kill-process-mcp?style=flat-square&color=yellow" alt="GitHub Stars" />
+  <img src="https://img.shields.io/github/last-commit/misiektoja/kill-process-mcp?style=flat-square&color=green" alt="Last Commit" />
+  <img src="https://img.shields.io/github/license/misiektoja/kill-process-mcp?style=flat-square&color=blue" alt="License" />
+  <img src="https://img.shields.io/badge/maintenance-active-brightgreen?style=flat-square" alt="Maintenance" />
+</p>
 
-Perfect for shy ninjas who just want rogue processes gone!
+Cross-platform **MCP** (Model Context Protocol) server exposing LLM-accessible tools to **list and kill OS processes** via natural language queries.
 
-> **"Find and nuke the damn CPU glutton choking my system!"**
-
-<a href="https://glama.ai/mcp/servers/@misiektoja/kill-process-mcp">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@misiektoja/kill-process-mcp/badge" alt="kill-process-mcp MCP server" />
-</a>
+Perfect for shy ninjas who just want rogue processes gone: **"Find and nuke the damn CPU glutton choking my system!"**
 
 <a id="demo"></a>
 ## Demo
@@ -37,7 +38,7 @@ The following tools are exposed to MCP clients:
 
 You can install `kill-process-mcp` in two ways:
 
-1. **Preferred:** use `uvx` - no cloning or setup needed.  
+1. **Preferred:** use `uvx` - no cloning or setup needed.
 2. **Alternative:** clone the repo and set up manually.
 
 ---
@@ -50,7 +51,7 @@ Install [uv](https://github.com/astral-sh/uv) if missing:
 ```sh
 pip install uv
 
-# or on macOS: 
+# or on macOS:
 brew install uv
 ```
 
@@ -128,7 +129,7 @@ You can check if the server is loaded by going to **Profile → Settings → Con
 
 Register the `kill-process-mcp` as an MCP server in Cursor.
 
-Open Cursor settings and click **Tools & MCP → Add Custom MCP**. 
+Open Cursor settings and click **Tools & MCP → Add Custom MCP**.
 
 Once the `mcp.json` file opens, add the following if you want to use `uvx` method (recommended):
 
@@ -223,7 +224,7 @@ uv sync --reinstall
 <a id="known-issues"></a>
 ## Known issues
 
-We do not pin Python. New minor versions are usually supported on day one via wheels. 
+We do not pin Python. New minor versions are usually supported on day one via wheels.
 
 If you're using the alternative manual method with a cloned repo and you hit a build error (e.g `pydantic-core` or `rpds-py` failing with a Rust toolchain message), it usually means the ecosystem is catching up with the latest Python version. In most cases this is temporary and fixed shortly by
 upstream packages.
@@ -241,7 +242,7 @@ If that still fails, temporarily use your previous Python minor version until co
 <a id="disclaimer"></a>
 ## Disclaimer
 
-This MCP server is armed and dangerous. If you snipe the wrong process, that's on you. 
+This MCP server is armed and dangerous. If you snipe the wrong process, that's on you.
 
 Proceed with caution.
 
