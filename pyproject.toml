@@ -1,7 +1,7 @@
 [project]
 name = "kill-process-mcp"
 version = "1.1"
-description = "Cross-platform MCP server exposing tools to list and kill OS processes"
+description = "AI-powered cross-platform MCP server exposing LLM-accessible tools to list and terminate OS processes via natural language queries"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICEN[CS]E*"]
