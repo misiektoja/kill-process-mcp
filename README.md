@@ -1,9 +1,9 @@
 # kill-process-mcp 🔫
 
 <p align="left">
-  <img src="https://img.shields.io/github/stars/misiektoja/kill-process-mcp?style=flat-square&color=yellow" alt="GitHub Stars" />
-  <img src="https://img.shields.io/github/last-commit/misiektoja/kill-process-mcp?style=flat-square&color=green" alt="Last Commit" />
+  <img src="https://img.shields.io/github/stars/misiektoja/kill-process-mcp?style=flat-square&color=magenta" alt="GitHub Stars" />
   <img src="https://img.shields.io/github/license/misiektoja/kill-process-mcp?style=flat-square&color=blue" alt="License" />
+  <img src="https://img.shields.io/github/last-commit/misiektoja/kill-process-mcp?style=flat-square&color=green" alt="Last Commit" />
   <img src="https://img.shields.io/badge/maintenance-active-brightgreen?style=flat-square" alt="Maintenance" />
 </p>
 
