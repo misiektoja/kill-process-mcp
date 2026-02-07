@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/misiektoja-kill-process-mcp-badge.png)](https://mseep.ai/app/misiektoja-kill-process-mcp)
+
 # kill-process-mcp 🔫
 
 <p align="left">
