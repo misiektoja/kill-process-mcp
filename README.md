@@ -34,6 +34,10 @@ The following tools are exposed to MCP clients:
 * Libraries: `mcp` `psutil`
 
 <a id="installation"></a>
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/misiektoja-kill-process-mcp).
+
 ## Installation
 
 You can install `kill-process-mcp` in two ways:
